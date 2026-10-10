@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101412">
+  <title>Eagler Hub</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #101412;
+      --panel: #171d19;
+      --panel-raised: #1d2520;
+      --line: #303a33;
+      --muted: #a1aaa2;
+      --paper: #f0f3ec;
+      --acid: #c9f36a;
+      --blue: #83d6e8;
+      --coral: #ff9476;
+      --font: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--ink); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--paper);
+      font-family: var(--font);
+      background:
+        radial-gradient(ellipse at 85% 0%, rgba(72, 109, 75, .18), transparent 34rem),
+        repeating-linear-gradient(0deg, transparent 0 47px, rgba(255,255,255,.018) 48px),
+        var(--ink);
+    }
+
+    button, input { font: inherit; }
+    a { color: inherit; }
+    .shell { max-width: 1440px; margin: 0 auto; padding: 0 48px 64px; }
+    .topbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .mark {
+      display: grid;
+      grid-template-columns: repeat(3, 6px);
+      grid-template-rows: repeat(3, 6px);
+      gap: 2px;
+      transform: rotate(-8deg);
+    }
+    .mark i { background: var(--acid); }
+    .mark i:nth-child(2), .mark i:nth-child(4), .mark i:nth-child(8) { opacity: .38; }
+    .mark i:nth-child(5) { background: var(--blue); }
+    .brand-name { font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+    .brand-name span { color: var(--acid); }
+    .top-note { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 12px rgba(201,243,106,.65); }
+
+    .intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 57px 0 34px;
+    }
+    .eyebrow { margin: 0 0 12px; color: var(--acid); font: 700 10px/1.2 var(--font); letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(38px, 5vw, 64px); line-height: .98; letter-spacing: -.045em; }
+    .intro p { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+    .count-box { flex: none; padding: 13px 16px; border-left: 2px solid var(--acid); background: rgba(255,255,255,.035); }
+    .count-box strong { display: block; font-size: 21px; line-height: 1.1; }
+    .count-box span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+
+    .toolbar { display: flex; align-items: center; gap: 18px; padding: 15px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .filters { display: flex; align-items: center; gap: 6px; }
+    .filter {
+      padding: 9px 12px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: color .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .filter:hover { color: var(--paper); }
+    .filter[aria-pressed="true"] { color: var(--acid); border-color: rgba(201,243,106,.32); background: rgba(201,243,106,.07); }
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: min(290px, 42vw);
+      margin-left: auto;
+      padding: 0 12px;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+    }
+    .search svg { width: 15px; height: 15px; flex: none; }
+    .search input { width: 100%; min-width: 0; height: 38px; padding: 0; color: var(--paper); background: transparent; border: 0; outline: 0; font-size: 12px; }
+    .search:focus-within { border-color: rgba(201,243,106,.55); }
+    .search input::placeholder { color: #7e8980; }
+
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 10px; }
+    .section-head h2 { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+    .section-head span { color: var(--muted); font-size: 11px; }
+    .client-list { display: grid; gap: 7px; }
+    .client {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 16px;
+      min-height: 72px;
+      padding: 10px 17px;
+      color: var(--paper);
+      text-decoration: none;
+      background: linear-gradient(100deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      border: 1px solid rgba(255,255,255,.065);
+      border-radius: 4px;
+      animation: arrive .38s both;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .client:hover, .client:focus-visible { transform: translateX(3px); background: var(--panel-raised); border-color: rgba(201,243,106,.38); outline: none; }
+    .client[hidden] { display: none; }
+    .client:nth-child(2) { animation-delay: 25ms; }
+    .client:nth-child(3) { animation-delay: 50ms; }
+    .client:nth-child(4) { animation-delay: 75ms; }
+    .client:nth-child(5) { animation-delay: 100ms; }
+    .client:nth-child(6) { animation-delay: 125ms; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    .client-index { color: #778179; font: 11px/1.2 monospace; }
+    .client-main { min-width: 0; }
+    .client-name { display: block; overflow-wrap: anywhere; font-size: 14px; font-weight: 700; }
+    .client-file { display: block; overflow-wrap: anywhere; margin-top: 5px; color: #8e9990; font: 10px/1.3 monospace; }
+    .tag { padding: 5px 8px; color: var(--blue); background: rgba(131,214,232,.08); border: 1px solid rgba(131,214,232,.17); border-radius: 2px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+    .tag.legit { color: var(--coral); background: rgba(255,148,118,.08); border-color: rgba(255,148,118,.18); }
+    .launch { display: flex; align-items: center; gap: 8px; color: var(--acid); font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .launch svg { width: 14px; height: 14px; transition: transform .18s ease; }
+    .client:hover .launch svg { transform: translateX(3px); }
+    .archive .tag { color: #d4b5f6; background: rgba(212,181,246,.08); border-color: rgba(212,181,246,.2); }
+    .archive .launch { color: #d4b5f6; }
+    .empty { display: none; padding: 38px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--line); }
+    .empty.visible { display: block; }
+    footer { display: flex; justify-content: space-between; gap: 18px; margin-top: 34px; padding-top: 16px; color: #778179; border-top: 1px solid var(--line); font-size: 10px; }
+
+    @media (max-width: 700px) {
+      .shell { padding: 0 20px 42px; }
+      .intro { align-items: start; padding: 42px 0 26px; }
+      .intro p { max-width: 260px; line-height: 1.5; }
+      .count-box { padding: 10px 11px; }
+      .count-box strong { font-size: 17px; }
+      .toolbar { flex-wrap: wrap; gap: 10px; }
+      .filters { max-width: 100%; overflow-x: auto; }
+      .filter { flex: none; padding: 8px 9px; }
+      .search { width: 100%; margin-left: 0; }
+      .client { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; padding: 10px 11px; }
+      .client .tag { display: none; }
+      .client-name { font-size: 13px; }
+      .launch { gap: 4px; font-size: 10px; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="Eagler Hub home">
+        <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="brand-name">EAGLER <span>HUB</span></span>
+      </a>
+      <div class="top-note"><span class="live-dot"></span> LOCAL LIBRARY</div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Eaglercraft client collection</p>
+          <h1 id="page-title">Eagler Hub</h1>
+          <p>Pick a client and jump in.</p>
+        </div>
+        <div class="count-box"><strong><span id="playable-count">12</span> + <span id="archive-count">3</span></strong><span>Clients / archives</span></div>
+      </section>
+
+      <section aria-label="Client library">
+        <div class="toolbar">
+          <div class="filters" role="group" aria-label="Filter clients">
+            <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter" type="button" data-filter="Hacked" aria-pressed="false">Hacked</button>
+            <button class="filter" type="button" data-filter="Legit" aria-pressed="false">Legit</button>
+            <button class="filter" type="button" data-filter="Archive" aria-pressed="false">Archives</button>
+          </div>
+          <label class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            <input id="search" type="search" placeholder="Find a client..." autocomplete="off" aria-label="Find a client">
+          </label>
+        </div>
+
+        <div class="section-head"><h2>Client library</h2><span id="result-count">15 items</span></div>
+        <div class="client-list" id="client-list">
+          <a class="client" href="Clients/Hacked/DragonX_V2_International.html" data-category="Hacked" data-name="DragonX V2 International">
+            <span class="client-index">01</span><span class="client-main"><span class="client-name">DragonX V2 International</span><span class="client-file">DragonX_V2_International.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/DragonX_V4.html" data-category="Hacked" data-name="DragonX V4">
+            <span class="client-index">02</span><span class="client-main"><span class="client-name">DragonX V4</span><span class="client-file">DragonX_V4.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/DragonXLite.html" data-category="Hacked" data-name="DragonX Lite">
+            <span class="client-index">03</span><span class="client-main"><span class="client-name">DragonX Lite</span><span class="client-file">DragonXLite.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/dragonXv3.html" data-category="Hacked" data-name="DragonX V3">
+            <span class="client-index">04</span><span class="client-main"><span class="client-name">DragonX V3</span><span class="client-file">dragonXv3.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/Justin%201.2.4.html" data-category="Hacked" data-name="Justin 1.2.4">
+            <span class="client-index">05</span><span class="client-main"><span class="client-name">Justin 1.2.4</span><span class="client-file">Justin 1.2.4.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/nit_client.html" data-category="Hacked" data-name="Nit Client">
+            <span class="client-index">06</span><span class="client-main"><span class="client-name">Nit Client</span><span class="client-file">nit_client.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/NitClient%202.0.html" data-category="Hacked" data-name="Nit Client 2.0">
+            <span class="client-index">07</span><span class="client-main"><span class="client-name">Nit Client 2.0</span><span class="client-file">NitClient 2.0.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/pi-client.html" data-category="Hacked" data-name="Pi Client">
+            <span class="client-index">08</span><span class="client-main"><span class="client-name">Pi Client</span><span class="client-file">pi-client.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/PremiumDragonv2.html" data-category="Hacked" data-name="Premium Dragon V2">
+            <span class="client-index">09</span><span class="client-main"><span class="client-name">Premium Dragon V2</span><span class="client-file">PremiumDragonv2.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Hacked/UwUClient%20v1%20Full.html" data-category="Hacked" data-name="UwU Client V1 Full">
+            <span class="client-index">10</span><span class="client-main"><span class="client-name">UwU Client V1 Full</span><span class="client-file">UwUClient v1 Full.html</span></span><span class="tag">Hacked</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Legit/Eagler-Reborn.html" data-category="Legit" data-name="Eagler Reborn">
+            <span class="client-index">11</span><span class="client-main"><span class="client-name">Eagler Reborn</span><span class="client-file">Eagler-Reborn.html</span></span><span class="tag legit">Legit</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client" href="Clients/Legit/shadowclient3.0beta.html" data-category="Legit" data-name="Shadow Client 3.0 Beta">
+            <span class="client-index">12</span><span class="client-main"><span class="client-name">Shadow Client 3.0 Beta</span><span class="client-file">shadowclient3.0beta.html</span></span><span class="tag legit">Legit</span><span class="launch">Launch <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h13M10 4l6 6-6 6"></path></svg></span>
+          </a>
+          <a class="client archive" href="Clients/Legit/Eaglerforge.zip" download data-category="Archive" data-name="Eaglerforge Archive">
+            <span class="client-index">13</span><span class="client-main"><span class="client-name">Eaglerforge</span><span class="client-file">Eaglerforge.zip</span></span><span class="tag">Archive</span><span class="launch">Download <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 2v11m-4-4 4 4 4-4M3 16v2h14v-2"></path></svg></span>
+          </a>
+          <a class="client archive" href="Clients/Legit/Resent-4.0-Patch-4-Signed.zip" download data-category="Archive" data-name="Resent 4.0 Patch 4 Signed">
+            <span class="client-index">14</span><span class="client-main"><span class="client-name">Resent 4.0 Patch 4 Signed</span><span class="client-file">Resent-4.0-Patch-4-Signed.zip</span></span><span class="tag">Archive</span><span class="launch">Download <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 2v11m-4-4 4 4 4-4M3 16v2h14v-2"></path></svg></span>
+          </a>
+          <a class="client archive" href="Clients/Legit/Starlike_Client_0.3.0_Offline.zip" download data-category="Archive" data-name="Starlike Client 0.3.0 Offline">
+            <span class="client-index">15</span><span class="client-main"><span class="client-name">Starlike Client 0.3.0 Offline</span><span class="client-file">Starlike_Client_0.3.0_Offline.zip</span></span><span class="tag">Archive</span><span class="launch">Download <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 2v11m-4-4 4 4 4-4M3 16v2h14v-2"></path></svg></span>
+          </a>
+        </div>
+        <div class="empty" id="empty">No clients match that search.</div>
+      </section>
+    </main>
+
+    <footer><span>EAGLER HUB</span><span>Client files stay in your local library.</span></footer>
+  </div>
+  <script>
+    const filters = [...document.querySelectorAll(".filter")];
+    const clients = [...document.querySelectorAll(".client")];
+    const search = document.querySelector("#search");
+    const resultCount = document.querySelector("#result-count");
+    const empty = document.querySelector("#empty");
+    let activeFilter = "all";
+
+    function updateLibrary() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      for (const client of clients) {
+        const matchesFilter = activeFilter === "all" || client.dataset.category === activeFilter;
+        const matchesSearch = client.dataset.name.toLowerCase().includes(query) || client.querySelector(".client-file").textContent.toLowerCase().includes(query);
+        client.hidden = !(matchesFilter && matchesSearch);
+        if (!client.hidden) visible += 1;
+      }
+      resultCount.textContent = `${visible} ${visible === 1 ? "item" : "items"}`;
+      empty.classList.toggle("visible", visible === 0);
+    }
+
+    for (const filter of filters) {
+      filter.addEventListener("click", () => {
+        activeFilter = filter.dataset.filter;
+        for (const item of filters) item.setAttribute("aria-pressed", String(item === filter));
+        updateLibrary();
+      });
+    }
+    search.addEventListener("input", updateLibrary);
+  </script>
+</body>
+</html>
